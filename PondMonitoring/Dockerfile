@@ -10,4 +10,6 @@ RUN pip3 install requests
 COPY pull_rainfall.py /home/pull_rainfall.py
 WORKDIR /home/
 
+ENV PATH_DATA /home/data/
+
 ENTRYPOINT ["python3", "pull_rainfall.py"]
