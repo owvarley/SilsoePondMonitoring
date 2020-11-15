@@ -7,9 +7,11 @@ RUN apt-get install -y python3 \
 
 RUN pip3 install requests
 
-COPY pull_rainfall.py /home/pull_rainfall.py
+COPY *.py /home/
 WORKDIR /home/
+
+RUN python3 -m unittest discover -v
 
 ENV PATH_DATA /home/data/
 
-ENTRYPOINT ["python3", "pull_rainfall.py"]
+ENTRYPOINT ["python3", "main.py"]

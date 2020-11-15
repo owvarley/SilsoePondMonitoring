@@ -16,17 +16,19 @@ class RainfallReading:
     def __str__ (self):
         return self.time + ", " + str(self.reading)
 
-response = requests.get(RAINFALL_API_CALL)
+class Rainfall:
+    @staticmethod
+    def Download():
+        response = requests.get(RAINFALL_API_CALL)
+        readings = []
 
-readings = []
+        for item in response.json()["items"]:
+            readings.append(RainfallReading(item["dateTime"], item["value"]))
 
-for item in response.json()["items"]:
-    readings.append(RainfallReading(item["dateTime"], item["value"]))
+        filename = PATH_DATA + DATA_FILE + time.strftime("_%Y%m%d") + DATA_FILE_TYPE
 
-filename = PATH_DATA + DATA_FILE + time.strftime("_%Y%m%d") + DATA_FILE_TYPE
+        with open(filename, "w") as f:
+            for reading in readings:
+                f.write(str(reading) + "\n")
 
-with open(filename, "w") as f:
-    for reading in readings:
-        f.write(str(reading) + "\n")
-
-print ("Total readings: " + str(len(readings)))
+        print ("Total readings: " + str(len(readings)))
