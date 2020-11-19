@@ -1,17 +1,14 @@
-FROM debian:bullseye-slim
+FROM alpine:latest
 
-RUN apt-get update
-RUN apt-get install -y python3 \
-                       python3-pip \
-                       python3-setuptools
-
-RUN pip3 install requests
+RUN apk update \
+    && apk add --update python3 \
+    && apk add --update py3-pip \
+    && pip3 install requests
 
 COPY *.py /home/
 WORKDIR /home/
 
-RUN python3 -m unittest discover -v
-
 ENV PATH_DATA /home/data/
+ENV HOUR_TO_CAPTURE 23
 
 ENTRYPOINT ["python3", "main.py"]

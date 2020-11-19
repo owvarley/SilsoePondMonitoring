@@ -1,14 +1,15 @@
 import pull_rainfall
 import time
 import datetime
+import os
 
-HOUR_TO_CAPTURE = 16
+HOUR_TO_CAPTURE = int(os.environ['HOUR_TO_CAPTURE'])
 SLEEP_1_HOUR = 1 * 60 * 60
 SLEEP_24_HOUR = 24 * 60 * 60
 
 def main(curr_hour, hour_to_capture, sleep_24, sleep_1):
     while True:
-        if curr_hour == hour_to_capture:
+        if curr_hour >= hour_to_capture:
             # Pull and save the rainfall data once a day after a given hour to ensure
             # a full set of data is retained
             pull_rainfall.Rainfall.Download()

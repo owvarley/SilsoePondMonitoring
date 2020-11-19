@@ -25,7 +25,7 @@ class Rainfall:
         for item in response.json()["items"]:
             readings.append(RainfallReading(item["dateTime"], item["value"]))
 
-        filename = PATH_DATA + DATA_FILE + time.strftime("_%Y%m%d") + DATA_FILE_TYPE
+        filename = PATH_DATA + DATA_FILE + time.strftime("_%Y%m%d_%H%M%S") + DATA_FILE_TYPE
 
         with open(filename, "w") as f:
             for reading in readings:
