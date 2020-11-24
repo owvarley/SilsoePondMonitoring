@@ -14,4 +14,4 @@ USER kermit
 ENV PATH_DATA /home/data/
 ENV HOUR_TO_CAPTURE 23
 
-ENTRYPOINT ["python3", "main.py"]
+ENTRYPOINT ["python3", "-u", "main.py"]
