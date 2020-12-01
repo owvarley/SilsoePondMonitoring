@@ -17,13 +17,17 @@ type RainfallData struct {
 	Date string
 }
 
+func (r RainfallData) ToSlice() []string {
+	return []string {
+		r.Date,
+		strconv.FormatFloat(r.Total, 'f', -1, 64)}
+}
+
 func SumUp(path_data string) {
 	rainfall_data := list.New()
 	files, err := ioutil.ReadDir(path_data)
 
-    if err != nil {
-        log.Fatal(err)
-	}
+	checkError("Failed to read the directory", err)
 	
 	// Read the values out of the CSV and generate a total and date
     for _, file := range files {
@@ -35,6 +39,12 @@ func SumUp(path_data string) {
 	// Write the values to a CSV file
 	write_to_csv(rainfall_data)
 }
+
+func checkError(message string, err error) {
+    if err != nil {
+        log.Fatal(message, err)
+    }
+}
 	
 func get_total_rainfall(path_file string) RainfallData {
 	RAINFALL_DATE := 0
@@ -42,10 +52,7 @@ func get_total_rainfall(path_file string) RainfallData {
 
 	// Open the CSV file for reading
 	csvfile, err := os.Open(path_file)
-
-	if err != nil {
-		log.Fatalln("Unable to open CSV file", err)
-	}
+	checkError("Unable to open CSV file", err)
 
 	reader := csv.NewReader(csvfile)
 
@@ -59,9 +66,7 @@ func get_total_rainfall(path_file string) RainfallData {
 		if err == io.EOF {
 			break
 		}
-		if err != nil {
-			log.Fatalln("Failed to parse CSV file", err)
-		}
+		checkError("Failed to parse CSV file", err)
 
 		date_of_recording = record[RAINFALL_DATE]
 		
@@ -77,8 +82,15 @@ func get_total_rainfall(path_file string) RainfallData {
 }
 
 func write_to_csv(rainfall_data *list.List) {
+	file, err := os.Create("total_rainfall.csv")
+	checkError("Unable to create CSV file", err)
+	defer file.Close()
+
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+
 	for r := rainfall_data.Front(); r != nil; r = r.Next() {
-		rainfall_data := r.Value.(RainfallData)
-		fmt.Println(rainfall_data.Date + "," + strconv.FormatFloat(rainfall_data.Total, 'f', -1, 64))
+		err := writer.Write( r.Value.(RainfallData).ToSlice())
+		checkError("Unable to write record into CSV file", err)
 	}
 }
