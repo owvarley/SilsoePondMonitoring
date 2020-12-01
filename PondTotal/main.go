@@ -2,8 +2,12 @@ package main
 
 import (
 	"github.com/owvarley/SilsoePondMonitoring/PondTotal.Go/sumupper"
+	"flag"
 )
 
 func main() {
-    sumupper.SumUp("/home/code/PondTotal.Go/")
+	dirPath := flag.String("dir", "./", "Directory to parse CSV files from")
+	flag.Parse()
+
+    sumupper.SumUp(*dirPath)
 }
