@@ -35,7 +35,7 @@ func SumUp(path_data string) {
 
 	// Read the values out of the CSV and generate a total and date
     for _, file := range files {
-		if strings.Contains(file.Name(), "csv") {
+		if strings.HasPrefix(file.Name(), "rainfall_data") {
 			rainfall_data.PushBack(get_total_rainfall(path_data + file.Name()))
 			num_csv_files += 1
 		}
