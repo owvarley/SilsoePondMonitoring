@@ -27,17 +27,27 @@ func SumUp(path_data string) {
 	rainfall_data := list.New()
 	files, err := ioutil.ReadDir(path_data)
 
+	log.SetOutput(os.Stdout)
+
 	checkError("Failed to read the directory", err)
 	
+	num_csv_files := 0
+
 	// Read the values out of the CSV and generate a total and date
     for _, file := range files {
 		if strings.Contains(file.Name(), "csv") {
-			rainfall_data.PushBack(get_total_rainfall(file.Name()))
+			rainfall_data.PushBack(get_total_rainfall(path_data + file.Name()))
+			num_csv_files += 1
 		}
 	}
 
-	// Write the values to a CSV file
-	write_to_csv(rainfall_data)
+	if num_csv_files > 0 {
+		// Write the values to a CSV file
+		write_to_csv(path_data, rainfall_data)
+	} else	{
+		fmt.Println("No CSV files found in " + path_data)
+	}
+
 }
 
 func checkError(message string, err error) {
@@ -52,7 +62,7 @@ func get_total_rainfall(path_file string) RainfallData {
 
 	// Open the CSV file for reading
 	csvfile, err := os.Open(path_file)
-	checkError("Unable to open CSV file", err)
+	checkError("Unable to open CSV file: ", err)
 
 	reader := csv.NewReader(csvfile)
 
@@ -81,8 +91,8 @@ func get_total_rainfall(path_file string) RainfallData {
 	return RainfallData { rainfall_total, date_of_recording }
 }
 
-func write_to_csv(rainfall_data *list.List) {
-	file, err := os.Create("total_rainfall.csv")
+func write_to_csv(path_data string, rainfall_data *list.List) {
+	file, err := os.Create(path_data + "total_rainfall.csv")
 	checkError("Unable to create CSV file", err)
 	defer file.Close()
 
