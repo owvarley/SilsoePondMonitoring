@@ -8,6 +8,7 @@ RUN go build main.go
 
 FROM golang:alpine
 
+COPY VERSION .
 WORKDIR /home/
 COPY --from=builder /build/main .
 
