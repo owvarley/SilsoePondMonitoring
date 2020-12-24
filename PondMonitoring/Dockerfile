@@ -5,6 +5,7 @@ RUN apk update \
     && apk add --update py3-pip \
     && pip3 install requests
 
+COPY VERSION .
 COPY *.py /home/
 WORKDIR /home/
 
